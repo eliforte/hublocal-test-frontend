@@ -10,7 +10,8 @@ import {
 } from '@mui/material'
 import { useAppDispatch } from '../../hooks'
 import { Header } from '../../components/header'
-import { signUpUser } from '../../store/register'
+import { signUpUser } from '../../store/users'
+import { useNavigate } from 'react-router-dom'
 
 export const Register: React.FC = () => {
   const [inputInfos, setInputInfos] = React.useState({
@@ -19,6 +20,7 @@ export const Register: React.FC = () => {
     name: ''
   })
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -104,7 +106,7 @@ export const Register: React.FC = () => {
             </Button>
             <Grid container sx={{ justifyContent: 'center' }}>
               <Grid item>
-                <Link href="/" variant="body2">
+                <Link component="button" onClick={() => navigate('/login')} variant="body2">
                   {'Já tem conta? Faça login'}
                 </Link>
               </Grid>
