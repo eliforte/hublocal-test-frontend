@@ -1,4 +1,6 @@
+
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import Swal from 'sweetalert2'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
 import {
@@ -20,9 +22,9 @@ const initialState: LoginInitialState = {
   success: false
 }
 
-export const signUpUser = createAsyncThunk<ILoginResponse, ILoginInput>('user/login', async (userInfos, thunkApi) => {
+export const signInUser = createAsyncThunk<ILoginResponse, ILoginInput>('user/login', async ({ email, password }, thunkApi) => {
   try {
-    const res = await api.post('/api/v1/login', userInfos)
+    const res = await api.post('/api/v1/login', { email, password })
     localStorage.setItem('user', JSON.stringify(res.data))
     return res.data as ILoginResponse
   } catch (err) {
@@ -42,19 +44,32 @@ export const loginSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(signUpUser.pending, (state: LoginInitialState) => {
+      .addCase(signInUser.pending, (state: LoginInitialState) => {
         state.loading = true
       })
     builder
-      .addCase(signUpUser.fulfilled, (state: LoginInitialState, action: PayloadAction<ILoginResponse>) => {
+      .addCase(signInUser.fulfilled, (state: LoginInitialState, action: PayloadAction<ILoginResponse>) => {
         state.loading = false
         state = { ...state, ...action.payload }
         state.error = undefined
+        window.location.pathname = '/home'
       })
     builder
-      .addCase(signUpUser.rejected, (state, action: PayloadAction<unknown>) => {
+      .addCase(signInUser.rejected, (state, action: PayloadAction<unknown>) => {
         state.loading = false
         state.error = action.payload
+        Swal.fire({
+          icon: 'warning',
+          title: 'Ops!',
+          text: `${state.error}`,
+          width: 400,
+          padding: '1em',
+          color: '#424242',
+          backdrop: `
+            rgba(97,97,97,0.73)
+            top
+          `
+        })
       })
   }
 })
