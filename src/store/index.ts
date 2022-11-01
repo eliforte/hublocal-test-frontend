@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import loginReducer from './login'
+import registerReducer from './register'
 
 const store = configureStore({
   reducer: {
-    login: loginReducer
+    login: loginReducer,
+    register: registerReducer
   }
 })
 
