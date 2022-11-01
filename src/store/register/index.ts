@@ -6,7 +6,7 @@ import {
   IRegisterInput,
   RegisterInitialState,
   IRegisterResponse
-} from './interface'
+} from './interfaces'
 
 const initialState: RegisterInitialState = {
   message: '',
