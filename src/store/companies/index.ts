@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
 import { AuthConfig } from '../../services/authConfig'
-import { IInputsCompany, ICompanyInitialState, ICompany } from './interface'
+import { IInputsCompany, ICompanyInitialState, ICompany } from './interfaces'
 
 const paramsId = useParams()
 
