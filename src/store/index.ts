@@ -1,11 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
-import loginReducer from './login'
-import registerReducer from './register'
+import usersReducer from './users'
+import companiesReducer from './companies'
+import placesReducer from './places'
+import ticketsReducer from './tickets'
+import responsiblesReducer from './responsibles'
 
 const store = configureStore({
   reducer: {
-    login: loginReducer,
-    register: registerReducer
+    users: usersReducer,
+    companies: companiesReducer,
+    places: placesReducer,
+    responsibles: responsiblesReducer,
+    tickets: ticketsReducer
   }
 })
 
