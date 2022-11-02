@@ -13,6 +13,12 @@ export interface ITicket {
   name: string
 }
 
+export interface IUserLocalStorage {
+  token: string
+  name: string
+  is_admin: boolean
+}
+
 export interface ITicketsInitialState {
   message: string
   statuCode: number

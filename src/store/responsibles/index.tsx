@@ -3,12 +3,12 @@ import Swal from 'sweetalert2'
 import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
-import { AuthConfig } from '../../services/authConfig'
-import { InputsResponsible, IResponsible, IResponsibleInitialState } from './interfaces'
-
-const paramsId = useParams()
-
-const authorizationConfig = AuthConfig()
+import {
+  InputsResponsible,
+  IResponsible,
+  IResponsibleInitialState,
+  IUserLocalStorage
+} from './interfaces'
 
 const initialState: IResponsibleInitialState = {
   message: '',
@@ -23,7 +23,12 @@ export const createResponsible = createAsyncThunk<IResponsible, InputsResponsibl
   'responsibles/create',
   async (responsableInfos: InputsResponsible, thunkApi) => {
     try {
-      const res = await api.post('/api/v1/responsibles', { ...responsableInfos }, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const res = await api.post('/api/v1/responsibles', { ...responsableInfos }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IResponsible
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -41,7 +46,12 @@ export const getAllResponsibles = createAsyncThunk<IResponsible>(
   'responsibles/getAll',
   async (_, thunkApi) => {
     try {
-      const res = await api.get('/api/v1/responsibles')
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const res = await api.get('/api/v1/responsibles', {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IResponsible
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -59,7 +69,13 @@ export const editResponsible = createAsyncThunk<IResponsible, InputsResponsible>
   'responsibles/edit',
   async (responsibleInfos: InputsResponsible, thunkApi) => {
     try {
-      const res = await api.put(`/api/v1/responsibles/${paramsId.id}`, { ...responsibleInfos }, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const paramsId = useParams()
+      const res = await api.put(`/api/v1/responsibles/${paramsId.id}`, { ...responsibleInfos }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IResponsible
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -77,7 +93,13 @@ export const getByIdResponsible = createAsyncThunk<IResponsible>(
   'responsibles/getById',
   async (_, thunkApi) => {
     try {
-      const res = await api.get(`/api/v1/responsibles/${paramsId.id}`, { ...authorizationConfig })
+      const paramsId = useParams()
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const res = await api.get(`/api/v1/responsibles/${paramsId.id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IResponsible
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -95,7 +117,13 @@ export const deleteResponsible = createAsyncThunk<IResponsible>(
   'responsibles/delete',
   async (_, thunkApi) => {
     try {
-      const res = await api.delete(`/api/v1/responsibles/${paramsId.id}`, { ...authorizationConfig })
+      const paramsId = useParams()
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const res = await api.delete(`/api/v1/responsibles/${paramsId.id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IResponsible
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -170,6 +198,7 @@ export const responsiblesSlice = createSlice({
           `
         })
         setTimeout(() => {
+          const paramsId = useParams()
           window.location.pathname = `/home/responsibles/details/${paramsId.id}`
         }, 2000)
       })

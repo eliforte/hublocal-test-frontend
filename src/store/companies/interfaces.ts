@@ -7,6 +7,12 @@ export interface ICompany {
   user_id: string
 }
 
+export interface IUserLocalStorage {
+  token: string
+  name: string
+  is_admin: boolean
+}
+
 export interface ICompanyForm {
   name: string
   cnpj: string

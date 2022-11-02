@@ -19,6 +19,12 @@ export interface IInputsPlace {
   company_id: string
 }
 
+export interface IUserLocalStorage {
+  token: string
+  name: string
+  is_admin: boolean
+}
+
 export interface IPlace {
   id: string
   name: string

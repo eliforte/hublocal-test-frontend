@@ -3,12 +3,7 @@ import Swal from 'sweetalert2'
 import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
-import { AuthConfig } from '../../services/authConfig'
-import { ITicketsInitialState, ITicket, ITicketInputs } from './interfaces'
-
-const paramsId = useParams()
-
-const authorizationConfig = AuthConfig()
+import { ITicketsInitialState, ITicket, ITicketInputs, IUserLocalStorage } from './interfaces'
 
 const initialState: ITicketsInitialState = {
   message: '',
@@ -23,7 +18,12 @@ export const createTicket = createAsyncThunk<ITicket, ITicketInputs>(
   'ticket/create',
   async (ticketsInfos: ITicketInputs, thunkApi) => {
     try {
-      const res = await api.post('/api/v1/tickets', { ...ticketsInfos }, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const res = await api.post('/api/v1/tickets', { ...ticketsInfos }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as ITicket
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -41,7 +41,12 @@ export const getAllTickets = createAsyncThunk<ITicket>(
   'ticket/getAll',
   async (_, thunkApi) => {
     try {
-      const res = await api.get('/api/v1/tickets')
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const res = await api.get('/api/v1/tickets', {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as ITicket
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -59,7 +64,13 @@ export const editTicket = createAsyncThunk<ITicket, ITicketInputs>(
   'ticket/edit',
   async (ticketsInfos: ITicketInputs, thunkApi) => {
     try {
-      const res = await api.put(`/api/v1/tickets/${paramsId.id}`, { ...ticketsInfos }, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const paramsId = useParams()
+      const res = await api.put(`/api/v1/tickets/${paramsId.id}`, { ...ticketsInfos }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as ITicket
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -77,7 +88,13 @@ export const getByIdTicket = createAsyncThunk<ITicket>(
   'ticket/getById',
   async (_, thunkApi) => {
     try {
-      const res = await api.get(`/api/v1/tickets/${paramsId.id}`, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const paramsId = useParams()
+      const res = await api.get(`/api/v1/tickets/${paramsId.id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as ITicket
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -95,7 +112,13 @@ export const deleteTicket = createAsyncThunk<ITicket>(
   'ticket/delete',
   async (_, thunkApi) => {
     try {
-      const res = await api.delete(`/api/v1/tickets/${paramsId.id}`, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const paramsId = useParams()
+      const res = await api.delete(`/api/v1/tickets/${paramsId.id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as ITicket
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -170,6 +193,7 @@ export const ticketsSlice = createSlice({
           `
         })
         setTimeout(() => {
+          const paramsId = useParams()
           window.location.pathname = `/home/tickets/details/${paramsId.id}`
         }, 2000)
       })

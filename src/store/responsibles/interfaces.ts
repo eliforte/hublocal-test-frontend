@@ -10,6 +10,12 @@ export interface InputsResponsible {
   is_main_responsable: boolean
 }
 
+export interface IUserLocalStorage {
+  token: string
+  name: string
+  is_admin: boolean
+}
+
 export interface IResponsibleInitialState {
   message: string
   statuCode: number

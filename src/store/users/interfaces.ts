@@ -3,6 +3,12 @@ export interface IInputLogin {
   password: string
 }
 
+export interface IUserLocalStorage {
+  token: string
+  name: string
+  is_admin: boolean
+}
+
 export interface ILoginResponse {
   token: string
   name: string

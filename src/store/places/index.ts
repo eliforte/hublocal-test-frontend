@@ -3,12 +3,12 @@ import Swal from 'sweetalert2'
 import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
-import { AuthConfig } from '../../services/authConfig'
-import { IInputsPlace, IPlace, IPlaceInitialState } from './interfaces'
-
-const paramsId = useParams()
-
-const authorizationConfig = AuthConfig()
+import {
+  IInputsPlace,
+  IPlace,
+  IUserLocalStorage,
+  IPlaceInitialState
+} from './interfaces'
 
 const initialState: IPlaceInitialState = {
   message: '',
@@ -23,7 +23,13 @@ export const createPlace = createAsyncThunk<IPlace, IInputsPlace>(
   'places/create',
   async (placeInfos: IInputsPlace, thunkApi) => {
     try {
-      const res = await api.post('/api/v1/places', { ...placeInfos }, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+
+      const res = await api.post('/api/v1/places', { ...placeInfos }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IPlace
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -41,7 +47,12 @@ export const getAllPlaces = createAsyncThunk<IPlace>(
   'places/getAll',
   async (_, thunkApi) => {
     try {
-      const res = await api.get('/api/v1/places')
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const res = await api.get('/api/v1/places', {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IPlace
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -59,7 +70,13 @@ export const editPlace = createAsyncThunk<IPlace, IInputsPlace>(
   'places/edit',
   async (placeInfos: IInputsPlace, thunkApi) => {
     try {
-      const res = await api.put(`/api/v1/places/${paramsId.id}`, { ...placeInfos }, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const paramsId = useParams()
+      const res = await api.put(`/api/v1/places/${paramsId.id}`, { ...placeInfos }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IPlace
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -77,7 +94,13 @@ export const getByIdPlace = createAsyncThunk<IPlace>(
   'places/getById',
   async (_, thunkApi) => {
     try {
-      const res = await api.get(`/api/v1/places/${paramsId.id}`, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const paramsId = useParams()
+      const res = await api.get(`/api/v1/places/${paramsId.id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IPlace
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -95,7 +118,13 @@ export const deletePlace = createAsyncThunk<IPlace>(
   'places/delete',
   async (_, thunkApi) => {
     try {
-      const res = await api.delete(`/api/v1/places/${paramsId.id}`, { ...authorizationConfig })
+      const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
+      const paramsId = useParams()
+      const res = await api.delete(`/api/v1/places/${paramsId.id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      })
       return res.data as IPlace
     } catch (err) {
       let errorMessage = 'Internal Server Error'
@@ -170,6 +199,7 @@ export const placesSlice = createSlice({
           `
         })
         setTimeout(() => {
+          const paramsId = useParams()
           window.location.pathname = `/home/places/details/${paramsId.id}`
         }, 2000)
       })
