@@ -8,10 +8,12 @@ import {
   Typography,
   Container
 } from '@mui/material'
-import { Header } from '../../components/header'
-import { useAppDispatch } from '../../hooks'
-import { signInUser } from '../../store/users'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { Header } from '../../components/header'
+import { Loading } from '../../components/loading'
+import { useAppDispatch } from '../../hooks'
+import { signInUser, useUsers } from '../../store/users'
 
 export const Login: React.FC = () => {
   const [inputInfos, setInputInfos] = React.useState({
@@ -19,12 +21,21 @@ export const Login: React.FC = () => {
     password: ''
   })
   const dispatch = useAppDispatch()
+  const user = useSelector(useUsers)
   const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     dispatch(signInUser(inputInfos))
   }
+
+  React.useEffect(() => {
+    if (localStorage.getItem('user') != null) {
+      navigate('/home/tickets')
+    }
+  }, [user.loading])
+
+  if (user.loading) return <Loading />
 
   return (
     <>
