@@ -106,7 +106,7 @@ export const Register: React.FC = () => {
             </Button>
             <Grid container sx={{ justifyContent: 'center' }}>
               <Grid item>
-                <Link component="button" onClick={() => navigate('/login')} variant="body2">
+                <Link component="button" onClick={() => navigate('/')} variant="body2">
                   {'Já tem conta? Faça login'}
                 </Link>
               </Grid>
