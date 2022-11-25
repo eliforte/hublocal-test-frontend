@@ -5,8 +5,10 @@ import {
   useTheme,
   useMediaQuery
 } from '@mui/material'
+import { useLocation } from 'react-router-dom'
 
 export const Header: React.FC = () => {
+  const path = useLocation().pathname
   const theme = useTheme()
   const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -14,7 +16,11 @@ export const Header: React.FC = () => {
     <Box
       display="flex"
       flexDirection="row"
-      marginLeft={ smDown ? theme.spacing(0) : theme.spacing(29)}
+      marginLeft={
+        smDown || (path === '/register' || path === '/')
+          ? theme.spacing(2)
+          : theme.spacing(29)
+      }
       maxWidth="100vw"
     >
       <Typography
