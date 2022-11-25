@@ -10,13 +10,12 @@ import { useNavigate } from 'react-router-dom'
 import { ITicket } from '../../store/tickets/interfaces'
 import { DrawerMenu } from '../../components/drawer'
 import { Header } from '../../components/header'
-// import { CartItem } from '../../components/cardItem'
 import { CreateButton } from '../../components/createButtom'
 import { getAllTickets, useTickets } from '../../store/tickets'
 import { useAppDispatch } from '../../hooks'
 import { EmptyContent } from '../../components/emptyContent'
 
-export const Home: React.FC = () => {
+export const Tickets: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const tickets = useSelector(useTickets)
