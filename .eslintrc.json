@@ -67,7 +67,7 @@
         "camelcase": "off",
         "array-callback-return": "off",
         "@typescript-eslint/no-unused-expressions": "warn",
-        "@typescript-eslint/strict-boolean-expressions": "warn",
+        "@typescript-eslint/strict-boolean-expressions": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/restrict-template-expressions": "off",
