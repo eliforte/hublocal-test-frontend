@@ -30,7 +30,7 @@ export const CreateButton: React.FC<Props> = ({ path, text }) => {
           color: '#3b3b3b'
         }}
       >
-        { `Criar ${text}` }
+        { `Registrar ${text}` }
       </Link>
     </Box>
   )
