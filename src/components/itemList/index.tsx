@@ -22,10 +22,25 @@ export const ItemList: React.FC<Props> = ({
 
   return (
     <ListItemButton sx={{ backgroundColor: pagePath === path ? '#757575' : 'white' }} onClick={ () => Navigate(path) }>
-      <ListItemIcon sx={{ color: pagePath === path ? 'white' : '#757575' }}>
+      <ListItemIcon
+        sx={{
+          color: pagePath === path ? 'white' : '#757575',
+          '&:hover': {
+            color: '#757575'
+          }
+        }}
+      >
         { icon }
       </ListItemIcon>
-      <ListItemText sx={{ color: pagePath === path ? 'white' : '#757575' }} primary={ name } />
+      <ListItemText
+        sx={{
+          color: pagePath === path ? 'white' : '#757575',
+          '&:hover': {
+            color: '#757575'
+          }
+        }}
+        primary={ name }
+      />
   </ListItemButton>
   )
 }
