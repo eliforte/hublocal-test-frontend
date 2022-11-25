@@ -34,7 +34,7 @@ export const EmptyContent: React.FC<Props> = ({ item }) => {
         gutterBottom
         alignSelf="center"
       >
-        {`Nenhum ${item} encontrado`}
+        {`Nenhum(a) ${item} encontrado(a)`}
       </Typography>
     </Box>
   )
