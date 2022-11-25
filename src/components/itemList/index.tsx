@@ -4,7 +4,7 @@ import {
   ListItemText
 } from '@mui/material'
 import * as React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 interface Props {
   name: string
@@ -17,14 +17,15 @@ export const ItemList: React.FC<Props> = ({
   path,
   icon
 }) => {
+  const pagePath = useLocation().pathname
   const Navigate = useNavigate()
 
   return (
-    <ListItemButton onClick={ () => Navigate(path) }>
-      <ListItemIcon>
+    <ListItemButton sx={{ backgroundColor: pagePath.includes(name.toLocaleLowerCase()) ? '#757575' : 'white' }} onClick={ () => Navigate(path) }>
+      <ListItemIcon sx={{ color: pagePath.includes(name.toLocaleLowerCase()) ? 'white' : '#757575' }}>
         { icon }
       </ListItemIcon>
-      <ListItemText primary={ name } />
+      <ListItemText sx={{ color: pagePath.includes(name.toLocaleLowerCase()) ? 'white' : '#757575' }} primary={ name } />
   </ListItemButton>
   )
 }
