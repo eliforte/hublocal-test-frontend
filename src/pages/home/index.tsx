@@ -5,18 +5,26 @@ import {
   useTheme,
   useMediaQuery
 } from '@mui/material'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { ITicket } from '../../store/tickets/interfaces'
 import { DrawerMenu } from '../../components/drawer'
 import { Header } from '../../components/header'
 // import { CartItem } from '../../components/cardItem'
 import { CreateButton } from '../../components/createButtom'
+import { getAllTickets, useTickets } from '../../store/tickets'
+import { useAppDispatch } from '../../hooks'
+import { EmptyContent } from '../../components/emptyContent'
 
 export const Home: React.FC = () => {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const tickets = useSelector(useTickets)
   const theme = useTheme()
   const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
   React.useEffect(() => {
+    dispatch(getAllTickets())
     if (localStorage.getItem('user') == null) {
       navigate('/')
     }
@@ -24,7 +32,10 @@ export const Home: React.FC = () => {
 
   return (
     <Box width="100%">
-      <Box display="flex" flexDirection="row">
+      <Box
+        display="flex"
+        flexDirection="row"
+      >
         <DrawerMenu />
         <Header />
       </Box>
@@ -43,6 +54,19 @@ export const Home: React.FC = () => {
           Tickets
         </Typography>
         <CreateButton path="tickets" text="ticket"/>
+      </Box>
+      <Box
+        mt={theme.spacing(10)}
+        mr={theme.spacing(4)}
+        ml={smDown ? theme.spacing(4) : theme.spacing(40)}
+      >
+        {
+          !tickets.result
+            ? <EmptyContent item="ticket" />
+            : tickets.result.map((ticket: ITicket) => {
+              return <Typography key={ticket.id}>{ ticket.name }</Typography>
+            })
+        }
       </Box>
     </Box>
   )
