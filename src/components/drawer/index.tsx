@@ -52,12 +52,15 @@ export const DrawerMenu: React.FC = () => {
         sx={{
           padding: '5px',
           margin: '5px',
-          border: '1px solid #f5f5f5'
+          border: '1px solid transparent'
         }}
         onClick={() => handleToggle()}
         variant="outlined"
       >
-        <Menu sx={{ heigth: '25px', margin: '5px', color: '#f5f5f5' }} />
+        <Menu
+          fontSize='large'
+          sx={{ heigth: '25px', margin: '5px', color: '#f5f5f5' }}
+        />
       </Button>
       <Drawer
         open={open}
