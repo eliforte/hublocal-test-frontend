@@ -20,6 +20,7 @@ import {
 } from '@mui/icons-material'
 import { ItemList } from '../itemList'
 import { useNavigate } from 'react-router-dom'
+import { LogoutButton } from '../logoutButton'
 
 export const DrawerMenu: React.FC = () => {
   const theme = useTheme()
@@ -32,7 +33,7 @@ export const DrawerMenu: React.FC = () => {
   const getUserInfos = () => {
     if (localStorage.getItem('user') != null) {
       const data = JSON.parse(String(localStorage.getItem('user')))
-      setUserInfos(data.result.name)
+      setUserInfos(data.name)
     } else {
       Navigate('/')
     }
@@ -89,14 +90,16 @@ export const DrawerMenu: React.FC = () => {
           <Divider />
           <Box>
             <List component="nav">
-              <ItemList name="Tickets" path="/home" icon={ <Article /> } />
-              <ItemList name="Empresas" path="/companies" icon={ <Business /> } />
-              <ItemList name="Estabelecimentos" path="/places" icon={ <Place /> } />
-              <ItemList name="Responsáveis" path="/responsibles" icon={ <AdminPanelSettings /> } />
-              <ItemList name="Usuários" path="/users" icon={ <AccountBox /> } />
+              <ItemList name="Tickets" path="/home/tickets" icon={ <Article /> } />
+              <ItemList name="Empresas" path="/home/companies" icon={ <Business /> } />
+              <ItemList name="Estabelecimentos" path="/home/places" icon={ <Place /> } />
+              <ItemList name="Responsáveis" path="/home/responsibles" icon={ <AdminPanelSettings /> } />
+              <ItemList name="Usuários" path="/home/users" icon={ <AccountBox /> } />
             </List>
           </Box>
+          <Divider />
         </Box>
+        <LogoutButton />
       </Drawer>
     </>
   )
