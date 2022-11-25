@@ -48,7 +48,7 @@ export const signUpUser = createAsyncThunk<IUser, IRegisterInput>(
 export const signInUser = createAsyncThunk<ILoginResponse, IInputLogin>('users/login', async ({ email, password }, thunkApi) => {
   try {
     const res = await api.post('/api/v1/login', { email, password })
-    localStorage.setItem('user', JSON.stringify(res.data))
+    localStorage.setItem('user', JSON.stringify(res.data.result))
     return res.data as ILoginResponse
   } catch (err) {
     let errorMessage = 'Internal Server Error'
