@@ -10,7 +10,8 @@ import {
   IUser,
   IRegisterInput,
   IInputsEditUser,
-  IUserLocalStorage
+  IUserLocalStorage,
+  IUsersResponse
 } from './interfaces'
 
 const initialState: IUserInitialState = {
@@ -61,7 +62,7 @@ export const signInUser = createAsyncThunk<ILoginResponse, IInputLogin>('users/l
   }
 })
 
-export const getAllUsers = createAsyncThunk<IUser>(
+export const getAllUsers = createAsyncThunk<IUsersResponse>(
   'users/getAll',
   async (_, thunkApi) => {
     try {
@@ -72,7 +73,7 @@ export const getAllUsers = createAsyncThunk<IUser>(
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as IUser
+      return res.data as IUsersResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -208,10 +209,10 @@ export const userSlice = createSlice({
           window.location.pathname = '/'
         }, 2000)
       })
-      .addCase(getAllUsers.fulfilled, (state: IUserInitialState, action: PayloadAction<IUser>) => {
-        state.loading = false
-        state = { ...state, ...action.payload }
+      .addCase(getAllUsers.fulfilled, (state: IUserInitialState, action: PayloadAction<IUsersResponse>) => {
+        state.result = action.payload.result
         state.error = undefined
+        state.loading = false
       })
       .addCase(editUser.fulfilled, (state: IUserInitialState, action: PayloadAction<IInputsEditUser>) => {
         state.loading = false
@@ -355,6 +356,6 @@ export const userSlice = createSlice({
 
 export default userSlice.reducer
 
-export const useUsers = (state: IUserInitialState): IUserInitialState => {
-  return state
+export const useUsers = (state: any) => {
+  return state.users as IUserInitialState
 }
