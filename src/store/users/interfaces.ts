@@ -18,7 +18,7 @@ export interface ILoginResponse {
 export interface IUserInitialState {
   message: string
   statuCode: number
-  result: []
+  result: IUser[]
   error: string | unknown
   login: {
     is_admin: boolean
@@ -30,6 +30,7 @@ export interface IUserInitialState {
 }
 
 export interface IUser {
+  id: string
   name: string
   email: string
   is_admin: boolean
@@ -48,4 +49,10 @@ export interface IInputsEditUser {
   email?: string
   password?: string
   is_admin?: boolean
+}
+
+export interface IUsersResponse {
+  message: string
+  result: IUser[]
+  statusCode: number
 }
