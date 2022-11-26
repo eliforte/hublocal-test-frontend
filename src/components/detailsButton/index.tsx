@@ -1,8 +1,7 @@
 import * as React from 'react'
 import {
   Link,
-  Box,
-  useTheme
+  Box
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,14 +12,13 @@ interface Props {
 
 export const DetailsButton: React.FC<Props> = ({ path, id }) => {
   const navigate = useNavigate()
-  const theme = useTheme()
 
   return (
-    <Box alignSelf="flex-end" margin={theme.spacing(2)}>
+    <Box alignSelf="flex-end">
       <Link
         component="button"
         variant="body2"
-        color="#eeeeee"
+        color="#787878"
         onClick={() => navigate(`/home/${path}/${id}`)}
       >
         Ver detalhes
