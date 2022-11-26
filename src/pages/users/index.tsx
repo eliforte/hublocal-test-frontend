@@ -16,9 +16,8 @@ export const Users: React.FC = () => {
     if (localStorage.getItem('user') == null) {
       navigate('/')
     }
-  }, [users.result])
+  }, [])
 
-  console.log(users)
   return (
     <Box width="100%">
       <Box
