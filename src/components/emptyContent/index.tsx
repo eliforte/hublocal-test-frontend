@@ -3,10 +3,10 @@ import { Box, useTheme, Typography } from '@mui/material'
 import { Block } from '@mui/icons-material'
 
 interface Props {
-  item: string
+  message: string
 }
 
-export const EmptyContent: React.FC<Props> = ({ item }) => {
+export const EmptyContent: React.FC<Props> = ({ message }) => {
   const theme = useTheme()
 
   return (
@@ -34,7 +34,7 @@ export const EmptyContent: React.FC<Props> = ({ item }) => {
         gutterBottom
         alignSelf="center"
       >
-        {`Nenhum(a) ${item} encontrado(a)`}
+        { message }
       </Typography>
     </Box>
   )
