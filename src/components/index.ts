@@ -1,4 +1,3 @@
-import { CartItem } from './cardItem'
 import { Header } from './header'
 import { CreateButton } from './createButtom'
 import { DetailsButton } from './detailsButton'
@@ -11,7 +10,6 @@ import { List } from './list'
 
 export {
   Header,
-  CartItem,
   CreateButton,
   DetailsButton,
   DrawerMenu,
