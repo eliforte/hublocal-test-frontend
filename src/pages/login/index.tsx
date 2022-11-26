@@ -10,8 +10,10 @@ import {
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Header } from '../../components/header'
-import { Loading } from '../../components/loading'
+import {
+  Header,
+  Loading
+} from '../../components'
 import { useAppDispatch } from '../../hooks'
 import { signInUser, useUsers } from '../../store/users'
 

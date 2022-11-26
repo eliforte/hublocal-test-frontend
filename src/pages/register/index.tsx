@@ -9,7 +9,7 @@ import {
   Container
 } from '@mui/material'
 import { useAppDispatch } from '../../hooks'
-import { Header } from '../../components/header'
+import { Header } from '../../components'
 import { signUpUser } from '../../store/users'
 import { useNavigate } from 'react-router-dom'
 
