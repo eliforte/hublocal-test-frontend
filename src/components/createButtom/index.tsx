@@ -1,9 +1,11 @@
 import * as React from 'react'
 import {
-  Box,
-  Link,
-  useTheme
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+  Fab
 } from '@mui/material'
+import { Add } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 
 interface Props {
@@ -14,24 +16,27 @@ interface Props {
 export const CreateButton: React.FC<Props> = ({ path, text }) => {
   const navigate = useNavigate()
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
-    <Box>
-      <Link
-        component="button"
-        variant="body2"
-        onClick={() => navigate(`/home/${path}/create`)}
-        sx={{
-          textDecoration: 'none',
-          padding: theme.spacing(2),
-          fontSize: '18px',
-          backgroundColor: 'whitesmoke',
-          borderRadius: '5px',
-          color: '#3b3b3b'
-        }}
-      >
-        { `Registrar ${text}` }
-      </Link>
-    </Box>
+    <Fab
+      sx={{
+        backgroundColor: 'whitesmoke',
+        '&:hover': {
+          backgroundColor: '#adadad'
+        },
+        position: 'absolute',
+        top: '85%',
+        left: smDown ? '80%' : '90%',
+        border: '1px solid #969696'
+      }}
+    >
+      <Tooltip title={`Registrar ${text}`}>
+        <Add
+          sx={{ maring: '1px' }}
+          onClick={() => navigate(`/home/${path}/create`)}
+        />
+      </Tooltip>
+    </Fab>
   )
 }
