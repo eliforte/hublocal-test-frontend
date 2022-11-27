@@ -5,7 +5,7 @@ import {
   useMediaQuery,
   Typography
 } from '@mui/material'
-import { CreateButton } from '../createButtom'
+import { CreateButton } from '../createButton'
 import { EmptyContent } from '../emptyContent'
 import { UserItemList } from '../userItemList'
 import { CompanyItemList } from '../companyItemList'
