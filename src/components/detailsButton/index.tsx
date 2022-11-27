@@ -19,7 +19,7 @@ export const DetailsButton: React.FC<Props> = ({ path, id }) => {
         component="button"
         variant="body2"
         color="#787878"
-        onClick={() => navigate(`/home/${path}/${id}`)}
+        onClick={() => navigate(`/details/${path}/${id}`)}
       >
         Ver detalhes
       </Link>
