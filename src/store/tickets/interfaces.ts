@@ -29,6 +29,7 @@ export interface ITicketsInitialState {
 }
 
 export interface ITicketInputs {
+  id: any
   upgradable_by_user: string
   status: string
   address: string
@@ -36,4 +37,16 @@ export interface ITicketInputs {
   cep: string
   complement: string
   name: string
+}
+
+export interface ITicketsResponse {
+  message: string
+  statuCode: number
+  result: ITicket[]
+}
+
+export interface IOneTicketsResponse {
+  message: string
+  statuCode: number
+  result: ITicket
 }

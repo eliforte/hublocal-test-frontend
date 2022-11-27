@@ -7,7 +7,9 @@ import {
   IInputsCompany,
   ICompanyInitialState,
   ICompany,
-  IUserLocalStorage
+  IUserLocalStorage,
+  ICompanyResponse,
+  IOneCompanyResponse
 } from './interfaces'
 
 const initialState: ICompanyInitialState = {
@@ -19,7 +21,7 @@ const initialState: ICompanyInitialState = {
   success: false
 }
 
-export const createCompany = createAsyncThunk<ICompany, IInputsCompany>(
+export const createCompany = createAsyncThunk<IOneCompanyResponse, IInputsCompany>(
   'companies/create',
   async (companyInfos: IInputsCompany, thunkApi) => {
     try {
@@ -29,7 +31,7 @@ export const createCompany = createAsyncThunk<ICompany, IInputsCompany>(
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as ICompany
+      return res.data as IOneCompanyResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -42,7 +44,7 @@ export const createCompany = createAsyncThunk<ICompany, IInputsCompany>(
   }
 )
 
-export const getAllCompanies = createAsyncThunk<ICompany>(
+export const getAllCompanies = createAsyncThunk<ICompanyResponse>(
   'companies/getAll',
   async (_, thunkApi) => {
     try {
@@ -52,7 +54,7 @@ export const getAllCompanies = createAsyncThunk<ICompany>(
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as ICompany
+      return res.data as ICompanyResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -65,18 +67,17 @@ export const getAllCompanies = createAsyncThunk<ICompany>(
   }
 )
 
-export const editCompany = createAsyncThunk<ICompany, IInputsCompany>(
+export const editCompany = createAsyncThunk<IOneCompanyResponse, IInputsCompany>(
   'companies/edit',
   async (companyInfos: IInputsCompany, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.put(`/api/v1/companies/${paramsId.id}`, { ...companyInfos }, {
+      const res = await api.put(`/api/v1/companies/${companyInfos.id}`, { ...companyInfos }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as ICompany
+      return res.data as IOneCompanyResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -89,18 +90,17 @@ export const editCompany = createAsyncThunk<ICompany, IInputsCompany>(
   }
 )
 
-export const getByIdCompany = createAsyncThunk<ICompany>(
+export const getByIdCompany = createAsyncThunk<IOneCompanyResponse, string | undefined>(
   'companies/getById',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.get(`/api/v1/companies/${paramsId.id}`, {
+      const res = await api.get(`/api/v1/companies/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as ICompany
+      return res.data as IOneCompanyResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -113,13 +113,12 @@ export const getByIdCompany = createAsyncThunk<ICompany>(
   }
 )
 
-export const deleteCompany = createAsyncThunk<ICompany>(
+export const deleteCompany = createAsyncThunk<ICompany, string | undefined>(
   'companies/delete',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.delete(`/api/v1/companies/${paramsId.id}`, {
+      const res = await api.delete(`/api/v1/companies/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -159,9 +158,9 @@ export const companiesSlice = createSlice({
         state.loading = true
       })
     builder
-      .addCase(createCompany.fulfilled, (state: ICompanyInitialState, action: PayloadAction<ICompany>) => {
+      .addCase(createCompany.fulfilled, (state: ICompanyInitialState, action: PayloadAction<IOneCompanyResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state = { ...state, ...action.payload.result }
         state.error = undefined
         Swal.fire({
           icon: 'success',
@@ -176,14 +175,14 @@ export const companiesSlice = createSlice({
         })
         getAllCompanies()
       })
-      .addCase(getAllCompanies.fulfilled, (state: ICompanyInitialState, action: PayloadAction<ICompany>) => {
+      .addCase(getAllCompanies.fulfilled, (state: ICompanyInitialState, action: PayloadAction<ICompanyResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = action.payload.result
         state.error = undefined
       })
-      .addCase(editCompany.fulfilled, (state: ICompanyInitialState, action: PayloadAction<ICompany>) => {
+      .addCase(editCompany.fulfilled, (state: ICompanyInitialState, action: PayloadAction<IOneCompanyResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = [action.payload.result]
         state.error = undefined
         Swal.fire({
           icon: 'success',
@@ -199,12 +198,12 @@ export const companiesSlice = createSlice({
         })
         setTimeout(() => {
           const paramsId = useParams()
-          window.location.pathname = `/home/companies/details/${paramsId.id}`
+          window.location.pathname = `/details/companies/${paramsId.id}`
         }, 2000)
       })
-      .addCase(getByIdCompany.fulfilled, (state: ICompanyInitialState, action: PayloadAction<ICompany>) => {
+      .addCase(getByIdCompany.fulfilled, (state: ICompanyInitialState, action: PayloadAction<IOneCompanyResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = [action.payload.result]
         state.error = undefined
       })
       .addCase(deleteCompany.fulfilled, (state: ICompanyInitialState, action: PayloadAction<ICompany>) => {

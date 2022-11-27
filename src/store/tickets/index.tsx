@@ -3,7 +3,14 @@ import Swal from 'sweetalert2'
 import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
-import { ITicketsInitialState, ITicket, ITicketInputs, IUserLocalStorage } from './interfaces'
+import {
+  ITicketsInitialState,
+  ITicket,
+  ITicketInputs,
+  IUserLocalStorage,
+  ITicketsResponse,
+  IOneTicketsResponse
+} from './interfaces'
 
 const initialState: ITicketsInitialState = {
   message: '',
@@ -37,7 +44,7 @@ export const createTicket = createAsyncThunk<ITicket, ITicketInputs>(
   }
 )
 
-export const getAllTickets = createAsyncThunk<ITicket>(
+export const getAllTickets = createAsyncThunk<ITicketsResponse>(
   'ticket/getAll',
   async (_, thunkApi) => {
     try {
@@ -47,7 +54,7 @@ export const getAllTickets = createAsyncThunk<ITicket>(
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as ITicket
+      return res.data as ITicketsResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -60,18 +67,17 @@ export const getAllTickets = createAsyncThunk<ITicket>(
   }
 )
 
-export const editTicket = createAsyncThunk<ITicket, ITicketInputs>(
+export const editTicket = createAsyncThunk<IOneTicketsResponse, ITicketInputs>(
   'ticket/edit',
   async (ticketsInfos: ITicketInputs, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.put(`/api/v1/tickets/${paramsId.id}`, { ...ticketsInfos }, {
+      const res = await api.put(`/api/v1/tickets/${ticketsInfos.id}`, { ...ticketsInfos }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as ITicket
+      return res.data as IOneTicketsResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -84,18 +90,17 @@ export const editTicket = createAsyncThunk<ITicket, ITicketInputs>(
   }
 )
 
-export const getByIdTicket = createAsyncThunk<ITicket>(
+export const getByIdTicket = createAsyncThunk<IOneTicketsResponse, string | undefined>(
   'ticket/getById',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.get(`/api/v1/tickets/${paramsId.id}`, {
+      const res = await api.get(`/api/v1/tickets/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as ITicket
+      return res.data as IOneTicketsResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -108,13 +113,12 @@ export const getByIdTicket = createAsyncThunk<ITicket>(
   }
 )
 
-export const deleteTicket = createAsyncThunk<ITicket>(
+export const deleteTicket = createAsyncThunk<ITicket, string | undefined>(
   'ticket/delete',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.delete(`/api/v1/tickets/${paramsId.id}`, {
+      const res = await api.delete(`/api/v1/tickets/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -171,14 +175,14 @@ export const ticketsSlice = createSlice({
         })
         getAllTickets()
       })
-      .addCase(getAllTickets.fulfilled, (state: ITicketsInitialState, action: PayloadAction<ITicket>) => {
+      .addCase(getAllTickets.fulfilled, (state: ITicketsInitialState, action: PayloadAction<ITicketsResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = action.payload.result
         state.error = undefined
       })
-      .addCase(editTicket.fulfilled, (state: ITicketsInitialState, action: PayloadAction<ITicket>) => {
+      .addCase(editTicket.fulfilled, (state: ITicketsInitialState, action: PayloadAction<IOneTicketsResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = [action.payload.result]
         state.error = undefined
         Swal.fire({
           icon: 'success',
@@ -194,12 +198,12 @@ export const ticketsSlice = createSlice({
         })
         setTimeout(() => {
           const paramsId = useParams()
-          window.location.pathname = `/home/tickets/details/${paramsId.id}`
+          window.location.pathname = `/details/tickets/${paramsId.id}`
         }, 2000)
       })
-      .addCase(getByIdTicket.fulfilled, (state: ITicketsInitialState, action: PayloadAction<ITicket>) => {
+      .addCase(getByIdTicket.fulfilled, (state: ITicketsInitialState, action: PayloadAction<IOneTicketsResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = [action.payload.result]
         state.error = undefined
       })
       .addCase(deleteTicket.fulfilled, (state: ITicketsInitialState, action: PayloadAction<ITicket>) => {

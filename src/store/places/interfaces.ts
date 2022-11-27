@@ -1,5 +1,6 @@
 
 export interface IInputsPlace {
+  id: any
   place: {
     name: string
     address: string
@@ -42,4 +43,16 @@ export interface IPlaceInitialState {
   result: IPlace[]
   error: string | unknown
   success: boolean
+}
+
+export interface IPlaceResponse {
+  message: string
+  statuCode: number
+  result: IPlace[]
+}
+
+export interface IOnePlaceResponse {
+  message: string
+  statuCode: number
+  result: IPlace
 }

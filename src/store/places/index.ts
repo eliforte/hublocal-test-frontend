@@ -7,7 +7,9 @@ import {
   IInputsPlace,
   IPlace,
   IUserLocalStorage,
-  IPlaceInitialState
+  IPlaceInitialState,
+  IOnePlaceResponse,
+  IPlaceResponse
 } from './interfaces'
 
 const initialState: IPlaceInitialState = {
@@ -43,7 +45,7 @@ export const createPlace = createAsyncThunk<IPlace, IInputsPlace>(
   }
 )
 
-export const getAllPlaces = createAsyncThunk<IPlace>(
+export const getAllPlaces = createAsyncThunk<IPlaceResponse>(
   'places/getAll',
   async (_, thunkApi) => {
     try {
@@ -53,7 +55,7 @@ export const getAllPlaces = createAsyncThunk<IPlace>(
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as IPlace
+      return res.data as IPlaceResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -66,18 +68,17 @@ export const getAllPlaces = createAsyncThunk<IPlace>(
   }
 )
 
-export const editPlace = createAsyncThunk<IPlace, IInputsPlace>(
+export const editPlace = createAsyncThunk<IOnePlaceResponse, IInputsPlace>(
   'places/edit',
   async (placeInfos: IInputsPlace, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.put(`/api/v1/places/${paramsId.id}`, { ...placeInfos }, {
+      const res = await api.put(`/api/v1/places/${placeInfos.id}`, { ...placeInfos }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as IPlace
+      return res.data as IOnePlaceResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -90,18 +91,17 @@ export const editPlace = createAsyncThunk<IPlace, IInputsPlace>(
   }
 )
 
-export const getByIdPlace = createAsyncThunk<IPlace>(
+export const getByIdPlace = createAsyncThunk<IOnePlaceResponse>(
   'places/getById',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.get(`/api/v1/places/${paramsId.id}`, {
+      const res = await api.get(`/api/v1/places/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as IPlace
+      return res.data as IOnePlaceResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -116,11 +116,10 @@ export const getByIdPlace = createAsyncThunk<IPlace>(
 
 export const deletePlace = createAsyncThunk<IPlace>(
   'places/delete',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.delete(`/api/v1/places/${paramsId.id}`, {
+      const res = await api.delete(`/api/v1/places/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -177,14 +176,14 @@ export const placesSlice = createSlice({
         })
         getAllPlaces()
       })
-      .addCase(getAllPlaces.fulfilled, (state: IPlaceInitialState, action: PayloadAction<IPlace>) => {
+      .addCase(getAllPlaces.fulfilled, (state: IPlaceInitialState, action: PayloadAction<IPlaceResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = action.payload.result
         state.error = undefined
       })
-      .addCase(editPlace.fulfilled, (state: IPlaceInitialState, action: PayloadAction<IPlace>) => {
+      .addCase(editPlace.fulfilled, (state: IPlaceInitialState, action: PayloadAction<IOnePlaceResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = [action.payload.result]
         state.error = undefined
         Swal.fire({
           icon: 'success',
@@ -200,12 +199,12 @@ export const placesSlice = createSlice({
         })
         setTimeout(() => {
           const paramsId = useParams()
-          window.location.pathname = `/home/places/details/${paramsId.id}`
+          window.location.pathname = `/details/places/${paramsId.id}`
         }, 2000)
       })
-      .addCase(getByIdPlace.fulfilled, (state: IPlaceInitialState, action: PayloadAction<IPlace>) => {
+      .addCase(getByIdPlace.fulfilled, (state: IPlaceInitialState, action: PayloadAction<IOnePlaceResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = [action.payload.result]
         state.error = undefined
       })
       .addCase(deletePlace.fulfilled, (state: IPlaceInitialState, action: PayloadAction<IPlace>) => {

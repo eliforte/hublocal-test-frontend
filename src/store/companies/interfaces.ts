@@ -30,6 +30,7 @@ export interface ICompanyResponsible {
 }
 
 export interface IInputsCompany {
+  id: any
   company: ICompanyForm
   responsible: ICompanyResponsible
 }
@@ -41,4 +42,16 @@ export interface ICompanyInitialState {
   result: ICompany[]
   error: string | unknown
   success: boolean
+}
+
+export interface ICompanyResponse {
+  message: string
+  statuCode: number
+  result: ICompany[]
+}
+
+export interface IOneCompanyResponse {
+  message: string
+  statuCode: number
+  result: ICompany
 }

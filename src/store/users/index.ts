@@ -11,7 +11,8 @@ import {
   IRegisterInput,
   IInputsEditUser,
   IUserLocalStorage,
-  IUsersResponse
+  IUsersResponse,
+  IOneUserResponse
 } from './interfaces'
 
 const initialState: IUserInitialState = {
@@ -86,18 +87,17 @@ export const getAllUsers = createAsyncThunk<IUsersResponse>(
   }
 )
 
-export const editUser = createAsyncThunk<IInputsEditUser, IUser>(
+export const editUser = createAsyncThunk<IOneUserResponse, IInputsEditUser>(
   'users/edit',
   async (editUserInfos: IInputsEditUser, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.put(`/api/v1/users/${paramsId.id}`, { ...editUserInfos }, {
+      const res = await api.put(`/api/v1/users/${editUserInfos.id}`, { ...editUserInfos }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as IUser
+      return res.data as IOneUserResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -110,18 +110,17 @@ export const editUser = createAsyncThunk<IInputsEditUser, IUser>(
   }
 )
 
-export const getByIdUser = createAsyncThunk<IUser>(
+export const getByIdUser = createAsyncThunk<IOneUserResponse, string | undefined>(
   'users/getById',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.get(`/api/v1/users/${paramsId.id}`, {
+      const res = await api.get(`/api/v1/users/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as IUser
+      return res.data as IOneUserResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -134,13 +133,12 @@ export const getByIdUser = createAsyncThunk<IUser>(
   }
 )
 
-export const deleteUser = createAsyncThunk<IUser>(
+export const deleteUser = createAsyncThunk<IUser, string | undefined>(
   'users/delete',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.delete(`/api/v1/users/${paramsId.id}`, {
+      const res = await api.delete(`/api/v1/users/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -214,9 +212,14 @@ export const userSlice = createSlice({
         state.error = undefined
         state.loading = false
       })
-      .addCase(editUser.fulfilled, (state: IUserInitialState, action: PayloadAction<IInputsEditUser>) => {
+      .addCase(getByIdUser.fulfilled, (state: IUserInitialState, action: PayloadAction<IOneUserResponse>) => {
+        state.result = [action.payload.result]
+        state.error = undefined
         state.loading = false
-        state = { ...state, ...action.payload }
+      })
+      .addCase(editUser.fulfilled, (state: IUserInitialState, action: PayloadAction<IOneUserResponse>) => {
+        state.loading = false
+        state.result = [action.payload.result]
         state.error = undefined
         Swal.fire({
           icon: 'success',
@@ -232,7 +235,7 @@ export const userSlice = createSlice({
         })
         setTimeout(() => {
           const paramsId = useParams()
-          window.location.pathname = `/home/user/details/${paramsId.id}`
+          window.location.pathname = `/details/users/${paramsId.id}`
         }, 2000)
       })
       .addCase(deleteUser.fulfilled, (state: IUserInitialState, action: PayloadAction<IUser>) => {

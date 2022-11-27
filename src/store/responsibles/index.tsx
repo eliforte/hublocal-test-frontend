@@ -7,7 +7,9 @@ import {
   InputsResponsible,
   IResponsible,
   IResponsibleInitialState,
-  IUserLocalStorage
+  IUserLocalStorage,
+  IOneResponsibleResponse,
+  IResponsibleResponse
 } from './interfaces'
 
 const initialState: IResponsibleInitialState = {
@@ -42,7 +44,7 @@ export const createResponsible = createAsyncThunk<IResponsible, InputsResponsibl
   }
 )
 
-export const getAllResponsibles = createAsyncThunk<IResponsible>(
+export const getAllResponsibles = createAsyncThunk<IResponsibleResponse>(
   'responsibles/getAll',
   async (_, thunkApi) => {
     try {
@@ -52,7 +54,7 @@ export const getAllResponsibles = createAsyncThunk<IResponsible>(
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as IResponsible
+      return res.data as IResponsibleResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -65,18 +67,17 @@ export const getAllResponsibles = createAsyncThunk<IResponsible>(
   }
 )
 
-export const editResponsible = createAsyncThunk<IResponsible, InputsResponsible>(
+export const editResponsible = createAsyncThunk<IOneResponsibleResponse, InputsResponsible>(
   'responsibles/edit',
   async (responsibleInfos: InputsResponsible, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const paramsId = useParams()
-      const res = await api.put(`/api/v1/responsibles/${paramsId.id}`, { ...responsibleInfos }, {
+      const res = await api.put(`/api/v1/responsibles/${responsibleInfos.id}`, { ...responsibleInfos }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as IResponsible
+      return res.data as IOneResponsibleResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -89,18 +90,17 @@ export const editResponsible = createAsyncThunk<IResponsible, InputsResponsible>
   }
 )
 
-export const getByIdResponsible = createAsyncThunk<IResponsible>(
+export const getByIdResponsible = createAsyncThunk<IOneResponsibleResponse, string | undefined>(
   'responsibles/getById',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
-      const paramsId = useParams()
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const res = await api.get(`/api/v1/responsibles/${paramsId.id}`, {
+      const res = await api.get(`/api/v1/responsibles/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       })
-      return res.data as IResponsible
+      return res.data as IOneResponsibleResponse
     } catch (err) {
       let errorMessage = 'Internal Server Error'
       if (err instanceof AxiosError) {
@@ -113,13 +113,12 @@ export const getByIdResponsible = createAsyncThunk<IResponsible>(
   }
 )
 
-export const deleteResponsible = createAsyncThunk<IResponsible>(
+export const deleteResponsible = createAsyncThunk<IResponsible, string | undefined>(
   'responsibles/delete',
-  async (_, thunkApi) => {
+  async (id, thunkApi) => {
     try {
-      const paramsId = useParams()
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const res = await api.delete(`/api/v1/responsibles/${paramsId.id}`, {
+      const res = await api.delete(`/api/v1/responsibles/${id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -176,14 +175,14 @@ export const responsiblesSlice = createSlice({
         })
         getAllResponsibles()
       })
-      .addCase(getAllResponsibles.fulfilled, (state: IResponsibleInitialState, action: PayloadAction<IResponsible>) => {
+      .addCase(getAllResponsibles.fulfilled, (state: IResponsibleInitialState, action: PayloadAction<IResponsibleResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = action.payload.result
         state.error = undefined
       })
-      .addCase(editResponsible.fulfilled, (state: IResponsibleInitialState, action: PayloadAction<IResponsible>) => {
+      .addCase(editResponsible.fulfilled, (state: IResponsibleInitialState, action: PayloadAction<IOneResponsibleResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = [action.payload.result]
         state.error = undefined
         Swal.fire({
           icon: 'success',
@@ -199,12 +198,12 @@ export const responsiblesSlice = createSlice({
         })
         setTimeout(() => {
           const paramsId = useParams()
-          window.location.pathname = `/home/responsibles/details/${paramsId.id}`
+          window.location.pathname = `/details/responsibles/${paramsId.id}`
         }, 2000)
       })
-      .addCase(getByIdResponsible.fulfilled, (state: IResponsibleInitialState, action: PayloadAction<IResponsible>) => {
+      .addCase(getByIdResponsible.fulfilled, (state: IResponsibleInitialState, action: PayloadAction<IOneResponsibleResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.result = [action.payload.result]
         state.error = undefined
       })
       .addCase(deleteResponsible.fulfilled, (state: IResponsibleInitialState, action: PayloadAction<IResponsible>) => {

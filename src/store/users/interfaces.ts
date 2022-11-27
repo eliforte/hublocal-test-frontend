@@ -45,6 +45,7 @@ export interface IRegisterInput {
 }
 
 export interface IInputsEditUser {
+  id?: string
   name?: string
   email?: string
   password?: string
@@ -54,5 +55,11 @@ export interface IInputsEditUser {
 export interface IUsersResponse {
   message: string
   result: IUser[]
+  statusCode: number
+}
+
+export interface IOneUserResponse {
+  message: string
+  result: IUser
   statusCode: number
 }

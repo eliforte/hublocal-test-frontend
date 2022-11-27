@@ -1,4 +1,5 @@
 export interface InputsResponsible {
+  id: any
   company_id: string
   place_id: string
   full_name: string
@@ -37,4 +38,16 @@ export interface IResponsible {
   complement: string
   is_main_responsable: boolean
   created_at: Date
+}
+
+export interface IResponsibleResponse {
+  message: string
+  statuCode: number
+  result: IResponsible[]
+}
+
+export interface IOneResponsibleResponse {
+  message: string
+  statuCode: number
+  result: IResponsible
 }
