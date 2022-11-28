@@ -3,7 +3,8 @@ import {
   Box,
   Typography,
   Stack,
-  useTheme
+  useTheme,
+  useMediaQuery
 } from '@mui/material'
 import { DetailsButton } from '../detailsButton'
 import { IResponsible } from '../../store/responsibles/interfaces'
@@ -14,6 +15,7 @@ interface Props {
 
 export const ResponsibleItemList: React.FC<Props> = ({ data }) => {
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <Box
@@ -26,21 +28,22 @@ export const ResponsibleItemList: React.FC<Props> = ({ data }) => {
       }}
     >
       <Box display="flex" justifyContent="flex-end">
-        <DetailsButton path="users" id={data.id} />
+        <DetailsButton path="responsibles" id={data.id} />
       </Box>
       <Stack
         direction="row"
-        spacing={theme.spacing(5)}
+        flexWrap="wrap"
+        spacing={ smDown ? theme.spacing(0) : theme.spacing(4) }
       >
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">Nome Completo:</Typography>
           <Typography variant="body2">{ data.full_name }</Typography>
         </Box>
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">Endereço:</Typography>
           <Typography variant="body2">{ data.address }</Typography>
         </Box>
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">Telefone:</Typography>
           <Typography variant="body2">{ data.phone_number }</Typography>
         </Box>
