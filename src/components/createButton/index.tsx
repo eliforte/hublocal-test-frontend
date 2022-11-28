@@ -25,8 +25,8 @@ export const CreateButton: React.FC<Props> = ({ path, text }) => {
         '&:hover': {
           backgroundColor: '#adadad'
         },
-        position: 'absolute',
-        top: '85%',
+        position: 'fixed',
+        top: '90%',
         left: smDown ? '80%' : '90%',
         border: '1px solid #969696'
       }}
