@@ -8,6 +8,7 @@ import { Loading } from './loading'
 import { LogoutButton } from './logoutButton'
 import { List } from './list'
 import { Details } from './details'
+import { Create } from './create'
 
 export {
   Header,
@@ -19,5 +20,6 @@ export {
   Loading,
   LogoutButton,
   Details,
-  List
+  List,
+  Create
 }
