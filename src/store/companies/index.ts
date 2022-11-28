@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import Swal from 'sweetalert2'
-import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
 import {
@@ -9,7 +8,8 @@ import {
   ICompany,
   IUserLocalStorage,
   ICompanyResponse,
-  IOneCompanyResponse
+  IOneCompanyResponse,
+  ICompanyForm
 } from './interfaces'
 
 const initialState: ICompanyInitialState = {
@@ -67,12 +67,12 @@ export const getAllCompanies = createAsyncThunk<ICompanyResponse>(
   }
 )
 
-export const editCompany = createAsyncThunk<IOneCompanyResponse, IInputsCompany>(
+export const editCompany = createAsyncThunk<IOneCompanyResponse, ICompanyForm>(
   'companies/edit',
-  async (companyInfos: IInputsCompany, thunkApi) => {
+  async ({ id, ...infosWithoutId }: ICompanyForm, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const res = await api.put(`/api/v1/companies/${companyInfos.id}`, { ...companyInfos }, {
+      const res = await api.put(`/api/v1/companies/${id}`, { ...infosWithoutId }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -197,8 +197,7 @@ export const companiesSlice = createSlice({
           `
         })
         setTimeout(() => {
-          const paramsId = useParams()
-          window.location.pathname = `/details/companies/${paramsId.id}`
+          window.location.pathname = '/home/companies'
         }, 2000)
       })
       .addCase(getByIdCompany.fulfilled, (state: ICompanyInitialState, action: PayloadAction<IOneCompanyResponse>) => {
@@ -226,6 +225,22 @@ export const companiesSlice = createSlice({
         }, 2000)
       })
     builder
+      .addCase(createCompany.rejected, (state, action: PayloadAction<unknown>) => {
+        state.loading = false
+        state.error = action.payload
+        Swal.fire({
+          icon: 'warning',
+          title: 'Ops!',
+          text: `${state.error}`,
+          width: 400,
+          padding: '1em',
+          color: '#424242',
+          backdrop: `
+            rgba(97,97,97,0.73)
+            top
+          `
+        })
+      })
       .addCase(getAllCompanies.rejected, (state, action: PayloadAction<unknown>) => {
         state.loading = false
         state.error = action.payload
@@ -295,6 +310,6 @@ export const companiesSlice = createSlice({
 
 export default companiesSlice.reducer
 
-export const useCompanies = (state: ICompanyInitialState): ICompanyInitialState => {
-  return state
+export const useCompanies = (state: any) => {
+  return state.companies as ICompanyInitialState
 }

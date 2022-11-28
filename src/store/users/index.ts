@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import Swal from 'sweetalert2'
-import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
 import {
@@ -63,6 +62,24 @@ export const signInUser = createAsyncThunk<ILoginResponse, IInputLogin>('users/l
   }
 })
 
+export const createUserIfAdmin = createAsyncThunk<IUser, IRegisterInput>(
+  'users/create',
+  async ({ name, password, email, is_admin }, thunkApi) => {
+    try {
+      const res = await api.post('/api/v1/users/admin', { name, email, password, is_admin })
+      return res.data as IUser
+    } catch (err) {
+      let errorMessage = 'Internal Server Error'
+      if (err instanceof AxiosError) {
+        if (err.response?.data.message != null) {
+          errorMessage = err.response.data.message
+        }
+      }
+      return thunkApi.rejectWithValue(errorMessage)
+    }
+  }
+)
+
 export const getAllUsers = createAsyncThunk<IUsersResponse>(
   'users/getAll',
   async (_, thunkApi) => {
@@ -89,10 +106,10 @@ export const getAllUsers = createAsyncThunk<IUsersResponse>(
 
 export const editUser = createAsyncThunk<IOneUserResponse, IInputsEditUser>(
   'users/edit',
-  async (editUserInfos: IInputsEditUser, thunkApi) => {
+  async ({ id, ...infosWithoutId }: IInputsEditUser, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const res = await api.put(`/api/v1/users/${editUserInfos.id}`, { ...editUserInfos }, {
+      const res = await api.put(`/api/v1/users/${id}`, { ...infosWithoutId }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -168,6 +185,9 @@ export const userSlice = createSlice({
       .addCase(signUpUser.pending, (state: IUserInitialState) => {
         state.loading = true
       })
+      .addCase(createUserIfAdmin.pending, (state: IUserInitialState) => {
+        state.loading = true
+      })
       .addCase(getAllUsers.pending, (state: IUserInitialState) => {
         state.loading = true
       })
@@ -183,7 +203,7 @@ export const userSlice = createSlice({
     builder
       .addCase(signInUser.fulfilled, (state: IUserInitialState, action: PayloadAction<ILoginResponse>) => {
         state.loading = false
-        state = { ...state, ...action.payload }
+        state.login = { ...state, ...action.payload }
         state.error = undefined
         window.location.pathname = '/home/tickets'
       })
@@ -193,8 +213,8 @@ export const userSlice = createSlice({
         state.error = undefined
         Swal.fire({
           icon: 'success',
-          title: 'Conta criada com sucesso!',
-          text: 'Você será redirecionado para página de login.',
+          title: 'Usuário registrado com sucesso!',
+          text: 'Você será redirecionado.',
           width: 400,
           padding: '1em',
           color: '#424242',
@@ -205,6 +225,26 @@ export const userSlice = createSlice({
         })
         setTimeout(() => {
           window.location.pathname = '/'
+        }, 2000)
+      })
+      .addCase(createUserIfAdmin.fulfilled, (state: IUserInitialState, action: PayloadAction<IUser>) => {
+        state.loading = false
+        state = { ...state, ...action.payload }
+        state.error = undefined
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuário registrado com sucesso!',
+          text: 'Você será redirecionado.',
+          width: 400,
+          padding: '1em',
+          color: '#424242',
+          backdrop: `
+            rgba(97,97,97,0.73)
+            top
+          `
+        })
+        setTimeout(() => {
+          window.location.pathname = '/home/users'
         }, 2000)
       })
       .addCase(getAllUsers.fulfilled, (state: IUserInitialState, action: PayloadAction<IUsersResponse>) => {
@@ -234,8 +274,7 @@ export const userSlice = createSlice({
           `
         })
         setTimeout(() => {
-          const paramsId = useParams()
-          window.location.pathname = `/details/users/${paramsId.id}`
+          window.location.pathname = '/home/places'
         }, 2000)
       })
       .addCase(deleteUser.fulfilled, (state: IUserInitialState, action: PayloadAction<IUser>) => {
@@ -275,6 +314,22 @@ export const userSlice = createSlice({
         })
       })
       .addCase(signUpUser.rejected, (state, action: PayloadAction<unknown>) => {
+        state.loading = false
+        state.error = action.payload
+        Swal.fire({
+          icon: 'warning',
+          title: 'Ops!',
+          text: `${state.error}`,
+          width: 400,
+          padding: '1em',
+          color: '#424242',
+          backdrop: `
+            rgba(97,97,97,0.73)
+            top
+          `
+        })
+      })
+      .addCase(createUserIfAdmin.rejected, (state, action: PayloadAction<unknown>) => {
         state.loading = false
         state.error = action.payload
         Swal.fire({

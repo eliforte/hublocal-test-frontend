@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import Swal from 'sweetalert2'
-import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
 import {
@@ -9,6 +8,7 @@ import {
   IUserLocalStorage,
   IPlaceInitialState,
   IOnePlaceResponse,
+  IInputsEditPlace,
   IPlaceResponse
 } from './interfaces'
 
@@ -68,12 +68,12 @@ export const getAllPlaces = createAsyncThunk<IPlaceResponse>(
   }
 )
 
-export const editPlace = createAsyncThunk<IOnePlaceResponse, IInputsPlace>(
+export const editPlace = createAsyncThunk<IOnePlaceResponse, IInputsEditPlace>(
   'places/edit',
-  async (placeInfos: IInputsPlace, thunkApi) => {
+  async ({ id, ...infosWithoutId }: IInputsEditPlace, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const res = await api.put(`/api/v1/places/${placeInfos.id}`, { ...placeInfos }, {
+      const res = await api.put(`/api/v1/places/${id}`, { ...infosWithoutId }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -91,7 +91,7 @@ export const editPlace = createAsyncThunk<IOnePlaceResponse, IInputsPlace>(
   }
 )
 
-export const getByIdPlace = createAsyncThunk<IOnePlaceResponse>(
+export const getByIdPlace = createAsyncThunk<IOnePlaceResponse, string | undefined>(
   'places/getById',
   async (id, thunkApi) => {
     try {
@@ -114,7 +114,7 @@ export const getByIdPlace = createAsyncThunk<IOnePlaceResponse>(
   }
 )
 
-export const deletePlace = createAsyncThunk<IPlace>(
+export const deletePlace = createAsyncThunk<IPlace, string | undefined>(
   'places/delete',
   async (id, thunkApi) => {
     try {
@@ -198,8 +198,7 @@ export const placesSlice = createSlice({
           `
         })
         setTimeout(() => {
-          const paramsId = useParams()
-          window.location.pathname = `/details/places/${paramsId.id}`
+          window.location.pathname = '/home/places'
         }, 2000)
       })
       .addCase(getByIdPlace.fulfilled, (state: IPlaceInitialState, action: PayloadAction<IOnePlaceResponse>) => {
@@ -296,6 +295,6 @@ export const placesSlice = createSlice({
 
 export default placesSlice.reducer
 
-export const usePlaces = (state: IPlaceInitialState): IPlaceInitialState => {
-  return state
+export const usePlaces = (state: any) => {
+  return state.places as IPlaceInitialState
 }

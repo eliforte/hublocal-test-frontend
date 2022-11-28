@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import Swal from 'sweetalert2'
-import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import api from '../../services/api'
 import {
@@ -9,7 +8,8 @@ import {
   ITicketInputs,
   IUserLocalStorage,
   ITicketsResponse,
-  IOneTicketsResponse
+  IOneTicketsResponse,
+  ITicketCreateInput
 } from './interfaces'
 
 const initialState: ITicketsInitialState = {
@@ -21,9 +21,9 @@ const initialState: ITicketsInitialState = {
   success: false
 }
 
-export const createTicket = createAsyncThunk<ITicket, ITicketInputs>(
+export const createTicket = createAsyncThunk<ITicket, ITicketCreateInput>(
   'ticket/create',
-  async (ticketsInfos: ITicketInputs, thunkApi) => {
+  async (ticketsInfos: ITicketCreateInput, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
       const res = await api.post('/api/v1/tickets', { ...ticketsInfos }, {
@@ -69,10 +69,11 @@ export const getAllTickets = createAsyncThunk<ITicketsResponse>(
 
 export const editTicket = createAsyncThunk<IOneTicketsResponse, ITicketInputs>(
   'ticket/edit',
-  async (ticketsInfos: ITicketInputs, thunkApi) => {
+  async ({ id, ...infosWithoutId }: ITicketInputs, thunkApi) => {
     try {
       const user: IUserLocalStorage = JSON.parse(String(localStorage.getItem('user')))
-      const res = await api.put(`/api/v1/tickets/${ticketsInfos.id}`, { ...ticketsInfos }, {
+      console.log(user.token)
+      const res = await api.put(`/api/v1/tickets/${id}`, { ...infosWithoutId }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
@@ -137,7 +138,7 @@ export const deleteTicket = createAsyncThunk<ITicket, string | undefined>(
 )
 
 export const ticketsSlice = createSlice({
-  name: 'ticket',
+  name: 'tickets',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -197,8 +198,7 @@ export const ticketsSlice = createSlice({
           `
         })
         setTimeout(() => {
-          const paramsId = useParams()
-          window.location.pathname = `/details/tickets/${paramsId.id}`
+          window.location.pathname = '/home/places'
         }, 2000)
       })
       .addCase(getByIdTicket.fulfilled, (state: ITicketsInitialState, action: PayloadAction<IOneTicketsResponse>) => {
@@ -311,6 +311,6 @@ export const ticketsSlice = createSlice({
 
 export default ticketsSlice.reducer
 
-export const useTickets = (state: ITicketsInitialState): ITicketsInitialState => {
-  return state
+export const useTickets = (state: any) => {
+  return state.tickets as ITicketsInitialState
 }
