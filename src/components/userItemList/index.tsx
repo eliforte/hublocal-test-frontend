@@ -4,7 +4,8 @@ import {
   Typography,
   Chip,
   Stack,
-  useTheme
+  useTheme,
+  useMediaQuery
 } from '@mui/material'
 import { DetailsButton } from '../detailsButton'
 import { IUser } from '../../store/users/interfaces'
@@ -15,6 +16,7 @@ interface Props {
 
 export const UserItemList: React.FC<Props> = ({ data }) => {
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <Box
@@ -31,17 +33,22 @@ export const UserItemList: React.FC<Props> = ({ data }) => {
       </Box>
       <Stack
         direction="row"
-        spacing={theme.spacing(5)}
+        flexWrap="wrap"
+        spacing={ smDown ? theme.spacing(0) : theme.spacing(4) }
       >
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">Nome:</Typography>
           <Typography variant="body2">{ data.name }</Typography>
         </Box>
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">Email:</Typography>
           <Typography variant="body2">{ data.email }</Typography>
         </Box>
-        <Box display={ data.is_admin ? 'grid' : 'none'}>
+        <Box
+          alignItems="center"
+          display={ data.is_admin ? 'flex' : 'none'}
+          p={theme.spacing(1)}
+        >
           <Chip label="Administrador" color="success" />
         </Box>
       </Stack>
