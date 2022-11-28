@@ -4,7 +4,8 @@ import {
   Box,
   Typography,
   Stack,
-  useTheme
+  useTheme,
+  useMediaQuery
 } from '@mui/material'
 import { DetailsButton } from '../detailsButton'
 import { ICompany } from '../../store/companies/interfaces'
@@ -15,6 +16,7 @@ interface Props {
 
 export const CompanyItemList: React.FC<Props> = ({ data }) => {
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <Box
@@ -26,22 +28,23 @@ export const CompanyItemList: React.FC<Props> = ({ data }) => {
         borderRadius: '5px'
       }}
     >
-      <Box>
-        <DetailsButton path="users" id={data.id} />
+      <Box display="flex" justifyContent="flex-end">
+        <DetailsButton path="companies" id={data.id} />
       </Box>
       <Stack
         direction="row"
-        spacing={theme.spacing(5)}
+        flexWrap="wrap"
+        spacing={ smDown ? theme.spacing(0) : theme.spacing(4) }
       >
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">Nome:</Typography>
           <Typography variant="body2">{ data.name }</Typography>
         </Box>
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">CNPJ:</Typography>
           <Typography variant="body2">{ data.cnpj }</Typography>
         </Box>
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">Criada em:</Typography>
           <Typography variant="body2">{ dayjs(data.created_at).format('DD/MM/YYYY') }</Typography>
         </Box>
