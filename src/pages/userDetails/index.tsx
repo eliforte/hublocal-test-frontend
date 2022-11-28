@@ -1,24 +1,20 @@
 import * as React from 'react'
-import { Box } from '@mui/material'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useAppDispatch } from '../../hooks'
-import { getByIdUser } from '../../store/users'
+import { Box, useTheme } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import { DrawerMenu, Header, Details } from '../../components'
 
 export const UserDetails: React.FC = () => {
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { id } = useParams()
+  const theme = useTheme()
 
   React.useEffect(() => {
-    dispatch(getByIdUser(id))
     if (localStorage.getItem('user') == null) {
       navigate('/')
     }
   }, [])
 
   return (
-    <Box width="100%">
+    <Box pb={theme.spacing(4)} width="100%">
       <Box
         display="flex"
         flexDirection="row"
