@@ -62,7 +62,6 @@ export const List: React.FC<Props> = ({
   const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
   const formatItemToRender = listItens.find((item) => item.currentPath === location)
-
   return (
     <>
       <Box
@@ -87,15 +86,15 @@ export const List: React.FC<Props> = ({
         ml={smDown ? theme.spacing(4) : theme.spacing(40)}
       >
         {
-          !itens
-            ? <EmptyContent message={emptyMessage} />
-            : itens.map((item: ITicket | ICompany | IUser | IResponsible | IPlace) => {
+          itens.length > 0
+            ? itens.map((item: ITicket | ICompany | IUser | IResponsible | IPlace) => {
               return <Box key={item.id}>
                 {
                   formatItemToRender?.component(item)
                 }
               </Box>
             })
+            : <EmptyContent message={emptyMessage} />
         }
       </Box>
     </>
