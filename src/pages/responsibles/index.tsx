@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -8,23 +8,23 @@ import {
   List
 } from '../../components'
 import { useAppDispatch } from '../../hooks'
-import { useResponsibles } from '../../store/responsibles'
-import { getAllPlaces } from '../../store/places'
+import { useResponsibles, getAllResponsibles } from '../../store/responsibles'
 
 export const Responsibles: React.FC = () => {
+  const theme = useTheme()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const responsibles = useSelector(useResponsibles)
 
   React.useEffect(() => {
-    dispatch(getAllPlaces())
+    dispatch(getAllResponsibles())
     if (localStorage.getItem('user') == null) {
       navigate('/')
     }
   }, [])
 
   return (
-    <Box width="100%">
+    <Box pb={theme.spacing(4)} width="100%">
       <Box
         display="flex"
         flexDirection="row"
