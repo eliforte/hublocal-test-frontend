@@ -26,17 +26,17 @@ export const PlaceItemList: React.FC<Props> = ({ data }) => {
       }}
     >
       <Box display="flex" justifyContent="flex-end">
-        <DetailsButton path="users" id={data.id} />
+        <DetailsButton path="places" id={data.id} />
       </Box>
       <Stack
         direction="row"
         spacing={theme.spacing(5)}
       >
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">Nome:</Typography>
           <Typography variant="body2">{ data.name }</Typography>
         </Box>
-        <Box>
+        <Box p={theme.spacing(1)}>
           <Typography variant="h6">Endereço:</Typography>
           <Typography variant="body2">{ data.address }</Typography>
         </Box>
