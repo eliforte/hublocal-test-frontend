@@ -90,30 +90,32 @@ export const UserForm: React.FC = () => {
         {
           user.result[0]
             ? <Stack
-              direction="row"
-              spacing={ smDown ? theme.spacing(0) : theme.spacing(5)}
-              flexWrap="wrap"
-            >
-              <Box padding={ smDown ? theme.spacing(2) : theme.spacing(0) }>
-                <Typography variant="h6">Nome:</Typography>
-                <Typography variant="body2">{ user.result[0].name }</Typography>
-              </Box>
-              <Box padding={ smDown ? theme.spacing(2) : theme.spacing(0) }>
-                <Typography variant="h6">Email:</Typography>
-                <Typography variant="body2">{ user.result[0].email }</Typography>
-              </Box>
-              <Box
-                padding={ smDown ? theme.spacing(2) : theme.spacing(0) }
-                display={ user.result[0].is_admin ? 'flex' : 'none'}>
-                <Chip label="Administrador" color="success" />
-              </Box>
-              <Box
-                padding={ smDown ? theme.spacing(2) : theme.spacing(0) }
+                direction="row"
+                spacing={theme.spacing(0)}
+                flexWrap="wrap"
+                alignItems="center"
               >
-                <Typography variant="h6">Criado em:</Typography>
-                <Typography variant="body2">{ dayjs(user.result[0].created_at).format('DD/MM/YYYY') }</Typography>
-              </Box>
-            </Stack>
+                <Box padding={ smDown ? theme.spacing(2) : theme.spacing(1) }>
+                  <Typography variant="h6">Nome:</Typography>
+                  <Typography variant="body2">{ user.result[0].name }</Typography>
+                </Box>
+                <Box padding={ smDown ? theme.spacing(2) : theme.spacing(1) }>
+                  <Typography variant="h6">Email:</Typography>
+                  <Typography variant="body2">{ user.result[0].email }</Typography>
+                </Box>
+                <Box
+                  alignItems="center"
+                  padding={ smDown ? theme.spacing(2) : theme.spacing(1) }
+                  display={ user.result[0].is_admin ? 'flex' : 'none'}>
+                  <Chip label="Administrador" color="success" />
+                </Box>
+                <Box
+                  padding={ smDown ? theme.spacing(2) : theme.spacing(1) }
+                >
+                  <Typography variant="h6">Criado em:</Typography>
+                  <Typography variant="body2">{ dayjs(user.result[0].created_at).format('DD/MM/YYYY') }</Typography>
+                </Box>
+              </Stack>
             : <Loading />
         }
       </Box>
@@ -156,15 +158,27 @@ export const UserForm: React.FC = () => {
             control={<Switch />}
             label="Administrador"
           />
-          <Box display="flex" justifyContent="flex-end">
+          </Box>
+          <Box
+            mt={theme.spacing(4)}
+            display="flex"
+            justifyContent="flex-end"
+          >
             <Button
-              variant="outlined"
+              variant="contained"
               startIcon={<Save />}
+              sx={{
+                color: '#303030',
+                backgroundColor: '#e3e3e3',
+                '&:hover': {
+                  backgroundColor: '#7d7d7d',
+                  color: '#e3e3e3'
+                }
+              }}
               onClick={() => handleUpdate()}
             >
               Salvar
             </Button>
-          </Box>
         </Box>
       </Box>
     </>
