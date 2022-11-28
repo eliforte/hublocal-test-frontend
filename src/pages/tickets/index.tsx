@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { DrawerMenu } from '../../components/drawer'
@@ -9,6 +9,7 @@ import { useAppDispatch } from '../../hooks'
 import { List } from '../../components/list'
 
 export const Tickets: React.FC = () => {
+  const theme = useTheme()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const tickets = useSelector(useTickets)
@@ -21,7 +22,7 @@ export const Tickets: React.FC = () => {
   }, [])
 
   return (
-    <Box width="100%">
+    <Box pb={theme.spacing(4)} width="100%">
       <Box
         display="flex"
         flexDirection="row"
