@@ -7,6 +7,10 @@ import {
 } from '@mui/material'
 import { useLocation } from 'react-router-dom'
 import { UserForm } from '../userForm'
+import { CompanyForm } from '../companyForm'
+import { PlaceForm } from '../placeForm'
+import { ResponsibleForm } from '../responsibleForm'
+import { TicketForm } from '../ticketForm'
 
 interface Props {
   title: string
@@ -16,8 +20,8 @@ const listItens = [
   {
     currentPath: '/details/users',
     component: () => <UserForm />
-  }
-  /* {
+  },
+  {
     currentPath: '/details/companies',
     component: () => <CompanyForm />
   },
@@ -26,13 +30,13 @@ const listItens = [
     component: () => <PlaceForm />
   },
   {
-    currentPath: '/details/tickets',
-    component: () => <TicketForm />
-  },
-  {
     currentPath: '/details/responsibles',
     component: () => <ResponsibleForm />
-  } */
+  },
+  {
+    currentPath: '/details/tickets',
+    component: () => <TicketForm />
+  }
 ]
 
 export const Details: React.FC<Props> = ({ title }) => {
