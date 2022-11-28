@@ -14,6 +14,7 @@ export interface IUserLocalStorage {
 }
 
 export interface ICompanyForm {
+  id?: string
   name: string
   cnpj: string
   description: string
@@ -30,7 +31,6 @@ export interface ICompanyResponsible {
 }
 
 export interface IInputsCompany {
-  id: any
   company: ICompanyForm
   responsible: ICompanyResponsible
 }

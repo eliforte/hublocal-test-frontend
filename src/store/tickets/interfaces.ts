@@ -11,6 +11,11 @@ export interface ITicket {
   cep: string
   complement: string
   name: string
+  place?: {
+    responsables: [{
+      full_name: string
+    }]
+  }
 }
 
 export interface IUserLocalStorage {
@@ -29,8 +34,8 @@ export interface ITicketsInitialState {
 }
 
 export interface ITicketInputs {
-  id: any
-  upgradable_by_user: string
+  id?: string | undefined
+  upgradable_by_user: string | undefined
   status: string
   address: string
   address_number: number
@@ -49,4 +54,18 @@ export interface IOneTicketsResponse {
   message: string
   statuCode: number
   result: ITicket
+}
+
+export interface ITicketCreateInput {
+  ticket: {
+    upgradable_by_user: string | undefined
+    status: string
+  }
+  place: {
+    address: string
+    address_number: number
+    cep: string
+    complement: string
+    name: string
+  }
 }

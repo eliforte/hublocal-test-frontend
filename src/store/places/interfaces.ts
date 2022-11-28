@@ -1,6 +1,6 @@
 
 export interface IInputsPlace {
-  id: any
+  id: string | undefined
   place: {
     name: string
     address: string
@@ -18,6 +18,15 @@ export interface IInputsPlace {
     is_main_responsable: boolean
   }
   company_id: string
+}
+
+export interface IInputsEditPlace {
+  id: string | undefined
+  name: string
+  address: string
+  address_number: number
+  complement: string
+  cep: string
 }
 
 export interface IUserLocalStorage {
@@ -52,7 +61,32 @@ export interface IPlaceResponse {
 }
 
 export interface IOnePlaceResponse {
+  id: string | undefined
   message: string
   statuCode: number
   result: IPlace
+}
+
+export interface IPlaceGetAll {
+  message: string
+  statuCode: number
+  result: [
+    {
+      id: string
+      name: string
+      address: string
+      address_number: number
+      complement: string
+      cep: string
+      create_at: Date
+      company_id: string
+      company: {
+        name: string
+      }
+      responsables: [{
+        full_name: string
+        is_main_responsable: boolean
+      }]
+    }
+  ]
 }

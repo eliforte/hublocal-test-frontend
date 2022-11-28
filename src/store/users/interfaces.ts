@@ -42,6 +42,7 @@ export interface IRegisterInput {
   name: string
   email: string
   password: string
+  is_admin?: boolean
 }
 
 export interface IInputsEditUser {
